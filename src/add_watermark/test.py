@@ -1,7 +1,6 @@
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-from random import random
 from glob import glob
 import os
 import numpy as np
@@ -22,21 +21,26 @@ def Add_Watermark(src_path, out_path, font_size_ratio = 0.04, distance_ratio = 0
     # 添加水印
     distance = (im.width + im.height) * distance_ratio/2 
     
+    import random
+    rx = (random.random()*random.random()*( 5.0) - 0.9) * distance
+    ry = (random.random()*random.random()*(-5.0) + 0.9) * distance
+
     cvPic = np.array(cv2.imread(src_path))
     fill = (255, 255, 255)
     if (np.average(
-        cvPic[int(im.height - 2.1*distance):int(im.height - 0.9*distance),\
-        int(distance + font_size * 1.1):int(distance + font_size * 4.4)]  \
+        cvPic[int(ry+im.height - 2.1*distance):int(ry+im.height - 0.9*distance),\
+        int(rx+distance + font_size * 1.1):int(rx+distance + font_size * 4.4)]  \
     ) > 180):
         fill = (50, 50, 50) 
 
-    draw.text((distance + font_size * 1.25, im.height - 2*distance), text, font=font, fill=fill)
-    draw.bitmap((distance, im.height - 1.90*distance), bitmap, '#4A484C')
+    draw.text((rx + distance + font_size * 1.25, ry + im.height - 2*distance), text, font=font, fill=fill)
+    draw.bitmap((rx + distance, ry + im.height - 1.90*distance), bitmap, '#4A484C')
     
-    left = distance
-    upper = im.height - 2.0*distance
-    right = distance + font_size*4.25
-    lower = im.height - 1.9*distance + font_size
+    left = rx + distance
+    upper = ry + im.height - 2.0*distance
+    right = rx + distance + font_size*4.25
+    lower = ry + im.height - 1.9*distance + font_size
+
     im.save(out_path)
     fp1.close()
     fp2.close()
