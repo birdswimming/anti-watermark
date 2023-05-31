@@ -34,9 +34,9 @@ def Add_Watermark(src_path, out_path, font_size_ratio = 0.04, distance_ratio = 0
     draw.bitmap((distance, im.height - 1.90*distance), bitmap, '#4A484C')
     
     left = distance
-    upper = im.height - 1.90*distance
+    upper = im.height - 2.0*distance
     right = distance + font_size*4.25
-    lower = im.height - 2*distance - font_size
+    lower = im.height - 1.9*distance + font_size
     im.save(out_path)
     fp1.close()
     fp2.close()
@@ -54,12 +54,14 @@ def Image_Cut(src_path, out_path, raw_label, picture_size = 256):
         label.append(raw_label[i]/size)
     im2 = im2.resize((picture_size, picture_size))
     im2.save(out_path)
+    label[1] = 1 - label[1]
+    label[3] = 1 - label[3]
     return label
     
     
 src_path = os.path.join('./data/source_data/birds/*.jpg')
 files = glob(src_path)
-data = open('data/training_data/locate_dataset/data.txt', 'w')
+data = open('data/training_data/cropped/data.txt', 'w')
 
 for f in files:
     a = f.split('/')
