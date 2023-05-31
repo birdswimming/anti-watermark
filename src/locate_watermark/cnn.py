@@ -39,11 +39,12 @@ class MyDataset(torch.utils.data.Dataset): #创建自己的类：MyDataset,这�
         return len(self.imgs)
  
 #根据自己定义的那个勒MyDataset来创建数据集！注意是数据集！而不是loader迭代器
-train_data_path = 'data/training_data/cropped/data.txt'
+train_data_path = 'data/training_data/cropped/train.txt'
+test_data_path  = 'data/training_data/cropped/test.txt'
 train_data=MyDataset(datatxt=train_data_path, transform=transforms.ToTensor())
-# test_data=MyDataset(txt=root+'test.txt', transform=transforms.ToTensor())
+test_data =MyDataset(datatxt=test_data_path,  transform=transforms.ToTensor())
 train_loader = Data.DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=True)
-
+test_loader  = Data.DataLoader(dataset=test_data,  batch_size=50)
 
 
 Net = resnet18(num_classes=4)
@@ -68,8 +69,15 @@ for epoch in range(EPOCH):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+        # print('Epoch: ',epoch, '| train loss: %.4f' % loss.data)
         if(step % 10 == 0):
-            print('Epoch: ',epoch, '| train loss: %.4f' % loss.data)
+            for test_step, (test_x, test_y) in enumerate(test_loader):
+                test_x = test_x.cuda()
+                test_y = test_y.cuda()
+                test_output = Net(test_x)
+                loss = loss_fn(test_output, test_y)
+                print('Epoch: ',epoch, '| loss: %.4f' % loss.data)
+            
             # # 可以单独进行模型的测试
             # test_output = Net(test_x)
             # # 1代表索引列，因为刚好匹配到0-9，获取概率高的
