@@ -7,9 +7,9 @@ from torchvision.models import resnet18
 from torchvision import transforms
 #设置随机种子以便复现
 torch.manual_seed(1)
-EPOCH=1
+EPOCH=20
 BATCH_SIZE=4
-LR=0.001
+LR=0.00001
 from PIL import Image
 import torch
  
@@ -40,11 +40,11 @@ class MyDataset(torch.utils.data.Dataset): #创建自己的类：MyDataset,这�
  
 #根据自己定义的那个勒MyDataset来创建数据集！注意是数据集！而不是loader迭代器
 train_data_path = 'data/training_data/cropped/train.txt'
-test_data_path  = 'data/training_data/cropped/test.txt'
+test_data_path  = 'data/testing_data/cropped/test.txt'
 train_data=MyDataset(datatxt=train_data_path, transform=transforms.ToTensor())
 test_data =MyDataset(datatxt=test_data_path,  transform=transforms.ToTensor())
 train_loader = Data.DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=True)
-test_loader  = Data.DataLoader(dataset=test_data,  batch_size=50)
+test_loader  = Data.DataLoader(dataset=test_data,  batch_size=test_data.__len__())
 
 
 Net = resnet18(num_classes=4)
@@ -77,13 +77,14 @@ for epoch in range(EPOCH):
                 test_output = Net(test_x)
                 loss = loss_fn(test_output, test_y)
                 print('Epoch: ',epoch, '| loss: %.4f' % loss.data)
-            
-            # # 可以单独进行模型的测试
-            # test_output = Net(test_x)
-            # # 1代表索引列，因为刚好匹配到0-9，获取概率高的
-            # # pre_y = torch.max(test_output, 1)[1].data.squeeze()
-            
-            # pre_y = torch.max(test_output, 1)[1]
-            # # 获取准确率
-            # accurary = float((pre_y == test_y).sum()) / float(test_y.size(0))
-            # print('Epoch: ',epoch, '| train loss: %.4f' % loss.data, '| test accurary: %.2f' % accurary)
+
+
+# Save the model checkpoint
+torch.save(Net.state_dict(), 'model.ckpt')
+
+with open("./data/testing_data/cropped/bbox_result.txt", "w") as f:
+    for l in test_output:
+        f.write(f"{l[0]} {l[1]} {l[2]} {l[3]}\n")
+    
+
+    
