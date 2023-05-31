@@ -68,7 +68,7 @@ for f in files:
     img_path = os.path.join('./data/source_data/birds/', b[0] + '.jpg')
     print(img_path)
     mid_path = os.path.join('data/training_data/watermark/', b[0] + '_wm.jpg')
-    out_path = os.path.join('data/training_data/locate_dataset/', b[0] + '_wm_crop.jpg')
+    out_path = os.path.join('data/training_data/cropped/', b[0] + '_wm_crop.jpg')
     label = Add_Watermark(img_path, mid_path)
     label = Image_Cut(mid_path, out_path, label)
     data.write(out_path + " {} {} {} {}\n".format(label[0],label[1],label[2],label[3]))
