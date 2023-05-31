@@ -3,11 +3,13 @@ import matplotlib.pyplot as plt
 import torchvision
 import torch.utils.data as Data
 import torch.nn as nn
+
 #设置随机种子以便复现
 torch.manual_seed(1)
 EPOCH=1
 BATCH_SIZE=64
 LR=0.001
+
 #如果已经下载好改为False
 DOWNLOAD_MINIST= False
 #获取手写数字训练集
@@ -31,6 +33,7 @@ test_data = torchvision.datasets.MNIST(
     # 是否是训练集
     train=False
 )
+
 # 批训练(32,1,28,28)
 train_loader = Data.DataLoader(dataset=train_data,batch_size=BATCH_SIZE,shuffle=True)
 # 由原来的(60000,28,28)变为(60000,1,28,28)
@@ -38,16 +41,16 @@ test_x = torch.unsqueeze(test_data.data, dim=1).type(torch.FloatTensor)[:2000]/2
 test_y = test_data.targets[:2000]
 print(test_x.size())
 print(test_y.size())
+
 # 若存在cuda环境，即可使用注释代码
 test_x = test_x.cuda()
 test_y = test_y.cuda()
 
 
-
 class CNN(nn.Module):
     def __init__(self):
         super(CNN,self).__init__()
-        #输入形状为(1,128,128)，输出形状为(16,64,64)
+        #输入形状为(1,128,128)，输出形状为(16,128,128)
         self.conv1 = nn.Sequential(
             nn.Conv2d(in_channels=3,   # 输入通道
                       out_channels=16, # 输出通道
@@ -64,8 +67,8 @@ class CNN(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(2)         #输出形状(32,32,32)
         )
-        #全连接网络，输出10个类别
-        self.out = nn.Linear(32*32*32,4)
+        # Fully connected, output bounding box's coordinates
+        self.out = nn.Linear(32*32*32, 4)
 
     def forward(self,x):
         x = self.conv1(x)
@@ -75,35 +78,29 @@ class CNN(nn.Module):
         output = self.out(x)
         return output
 
-
 cnn = CNN()
 # 若存在cuda环境，即可使用注释代码
 cnn = cnn.cuda()
-# 优化器
-optimizer = torch.optim.Adam(cnn.parameters(),lr=LR)
-# 损失函数，分类问题
-loss_fn = nn.CrossEntropyLoss()
+
+# Optimizer
+optimizer = torch.optim.Adam(cnn.parameters(), lr=LR)
+
+# Loss function
+loss_fn = nn.MSELoss()
 
 for epoch in range(EPOCH):
     # 迭代运行
-    for step, (x, y) in enumerate(train_loader):
-        x = x.cuda()
-        y = y.cuda()
-        output = cnn(x)
-        loss = loss_fn(output, y)
+    for step, (img, bbox) in enumerate(train_loader):
+        img = img.cuda()
+        bbox = bbox.cuda()
+        output = cnn(img)
+        loss = loss_fn(output, bbox)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
         if(step % 50 == 0):
-            # 可以单独进行模型的测试
-            test_output = cnn(test_x)
-            # 1代表索引列，因为刚好匹配到0-9，获取概率高的
-            # pre_y = torch.max(test_output, 1)[1].data.squeeze()
-            
-            pre_y = torch.max(test_output, 1)[1]
-            # 获取准确率
-            accurary = float((pre_y == test_y).sum()) / float(test_y.size(0))
-            print('Epoch: ',epoch, '| train loss: %.4f' % loss.data, '| test accurary: %.2f' % accurary)
+            print('Epoch: ',epoch, '| train loss: %.4f' % loss.data)
+
 # 最后可以模型保存
 test_output = cnn(test_x[:10])
 print(test_output)
