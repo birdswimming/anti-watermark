@@ -1,6 +1,7 @@
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+from random import random
 
 def Add_Watermark(src_path, out_path, font_size_ratio = 0.04, distance_ratio = 0.05, random = 0):
     im = Image.open(src_path)
