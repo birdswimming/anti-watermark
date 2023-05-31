@@ -15,11 +15,6 @@ with open(data_path, 'r') as f:
         img = cv2.imread(img_path)
         size = img.shape
         img = cv2.rectangle(
-            img, (int(size[1]*float(l[1])), int(size[0]*float(l[2]))), 
-                 (int(size[1]*float(l[3])), int(size[0]*float(l[4]))),
-                 (0,255,0), 1
-            )
-        img = cv2.rectangle(
             img, (int(size[1]*float(bbox[0])), int(size[0]*float(bbox[1]))), 
                  (int(size[1]*float(bbox[2])), int(size[0]*float(bbox[3]))),
                  (0,0,255), 1
