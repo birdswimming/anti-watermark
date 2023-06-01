@@ -15,25 +15,39 @@ model = torch.load('model/faster_rcnn.pkl')
 model.eval()
 model.to(device)
 
-test_loader  = DataLoader(dataset=test_dataset,  batch_size=test_dataset.__len__())
+test_loader  = DataLoader(dataset=test_dataset,  batch_size=1)
+
+boxes = []
+labels = []
+scores = []
+
 for i, (images, target) in enumerate(test_loader):
     image_batched = list(img.to(device) for img in images)
     pred = model(image_batched)
-    
-print(type(pred))
-print(type(pred[0]))
+    boxes.append(pred[0]['boxes'].cpu().detach().numpy())
+    labels.append(pred[0]['labels'].cpu().detach().numpy())
+    scores.append(pred[0]['scores'].cpu().detach().numpy())
+
+import pprint
+pprint.pprint(boxes)
+pprint.pprint(labels)
+pprint.pprint(scores)
+print(len(boxes))
+print(len(labels))
+print(len(scores))
+
 f = open("./data/testing_data/cropped/bbox_result.txt", "w")
-for result in pred:
-    boxes = result['boxes'][result['scores']>0.8].cpu().squeeze().tolist()
-    
-    print(boxes)
-    x_min = 0
-    y_min = 0
-    x_max = 0
-    y_max = 0
-    if len(boxes)!=0:
-        x_min = boxes[0]/600
-        y_min = boxes[1]/600
-        x_max = boxes[2]/600
-        y_max = boxes[3]/600
-    f.write(f"{x_min} {y_min} {x_max} {y_max}\n")
+for i,result in enumerate(boxes):
+    find = 0
+    for j,score in enumerate(scores[i]):
+        if score > 0.8:
+            box = boxes[i][j]
+            x_min = box[0]/600
+            y_min = box[1]/600
+            x_max = box[2]/600
+            y_max = box[3]/600
+            f.write(f"{x_min} {y_min} {x_max} {y_max}\n")
+            find = 1
+            break
+    if find == 0:
+        f.write(f"0 0 0 0\n")

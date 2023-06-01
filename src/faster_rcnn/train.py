@@ -9,7 +9,7 @@ from tqdm import tqdm # progress bar
 from my_detection import MyDetection
 from my_detection import get_transforms
 
-train_data_path = 'data/training_data/cropped/train.txt'
+train_data_path = 'data/training_data/mix/data.txt'
 train_dataset=MyDetection(datatxt=train_data_path, transform=get_transforms(True))
 n_classes = 2 #only watermark
 model = models.detection.fasterrcnn_mobilenet_v3_large_fpn(pretrained=True)
