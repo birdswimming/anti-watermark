@@ -36,7 +36,7 @@ class My_Places (torch.utils.data.Dataset):
         self.num_imgs  = len(self.img_paths)
         self.num_masks = len(self.mask_paths)
         self.img_transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(MEAN, STDDEV)])
-        
+        self.mask_transform = transforms.ToTensor()
     def __len__(self):
         return self.num_imgs
 
@@ -46,5 +46,5 @@ class My_Places (torch.utils.data.Dataset):
         
         mask = Image.open(self.mask_paths[index])
         mask = self.mask_transform(mask.convert('RGB'))
-
+        mask = mask/255
         return gt_img * mask, mask, gt_img
