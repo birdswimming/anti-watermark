@@ -11,7 +11,7 @@ test_data_path  = 'data/testing_data/cropped/test.txt'
 test_dataset =MyDetection(datatxt=test_data_path,  transform=get_transforms(False))
 
 device = torch.device("cuda") # use GPU to train
-model = torch.load('model/faster_rcnn.pkl')
+model = torch.load('model/fast-rcnn.pkl')
 model.eval()
 model.to(device)
 

@@ -60,4 +60,4 @@ num_epochs=10
 
 for epoch in range(num_epochs):
     train_one_epoch(model, optimizer, train_loader, device, epoch)
-torch.save(model, 'model/faster_rcnn.pkl')
+torch.save(model, 'model/fast-rcnn.pkl')
