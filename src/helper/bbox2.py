@@ -3,8 +3,8 @@ import os
 import numpy as np
 import cv2
 
-img_path = os.path.join('./data/', 'testing_data', 'cropped', 'test.txt')
-bbox_path = os.path.join('./data/', 'testing_data', 'cropped', 'bbox_result.txt')
+img_path    = os.path.join('./data/', 'testing_data', 'cropped', 'test.txt')
+bbox_path   = os.path.join('./data/', 'testing_data', 'cropped', 'bbox_result.txt')
 output_path = os.path.join('./data/', 'testing_data', 'bbox_infer')
 
 with open(bbox_path, 'r') as f:
