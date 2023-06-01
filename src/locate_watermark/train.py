@@ -8,21 +8,21 @@ from torchvision import transforms
 from my_dataset import MyDataset
 #设置随机种子以便复现
 torch.manual_seed(1)
-EPOCH=10
+EPOCH=50
 BATCH_SIZE=4
 LR=0.00001
 
  
 #根据自己定义的那个勒MyDataset来创建数据集！注意是数据集！而不是loader迭代器
-train_data_path = 'data/training_data/cropped/train.txt'
-test_data_path  = 'data/testing_data/cropped/test.txt'
+train_data_path = 'data/training_data/cropped/test.txt'
+test_data_path  = 'data/training_data/cropped/test.txt'
 train_data=MyDataset(datatxt=train_data_path, transform=transforms.ToTensor())
 test_data =MyDataset(datatxt=test_data_path,  transform=transforms.ToTensor())
 train_loader = Data.DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=True)
 test_loader  = Data.DataLoader(dataset=test_data,  batch_size=test_data.__len__())
 
 
-Net = resnet50(num_classes=4)
+Net = resnet18(num_classes=4)
 # 若存在cuda环境，即可使用注释代码
 Net = Net.cuda()
 # print(Net)
@@ -62,9 +62,9 @@ for epoch in range(EPOCH):
             # # 获取准确率
             # accurary = float((pre_y == test_y).sum()) / float(test_y.size(0))
             # print('Epoch: ',epoch, '| train loss: %.4f' % loss.data, '| test accurary: %.2f' % accurary)
-torch.save(Net, 'model/locate.pkl')
+torch.save(Net, 'model/locate_overfit.pkl')
 
-with open("./data/testing_data/cropped/bbox_result.txt", "w") as f:
+with open("./data/training_data/cropped/bbox_result.txt", "w") as f:
     for l in test_output:
         f.write(f"{l[0]} {l[1]} {l[2]} {l[3]}\n")
     
