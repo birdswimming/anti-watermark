@@ -36,10 +36,10 @@ def Add_Watermark(src_path, out_path, font_size_ratio = 0.04, distance_ratio = 0
     draw.text((rx + distance + font_size * 1.25, ry + im.height - 2*distance), text, font=font, fill=fill)
     draw.bitmap((rx + distance, ry + im.height - 1.90*distance), bitmap, '#4A484C')
     
-    left = rx + distance
-    upper = ry + im.height - 2.0*distance
-    right = rx + distance + font_size*4.25
-    lower = ry + im.height - 1.9*distance + font_size
+    left  = (rx + distance)/im.width
+    upper = (ry + im.height - 2.0*distance)/im.height
+    right = (rx + distance + font_size*4.25)/im.width
+    lower = (ry + im.height - 1.9*distance + font_size)/im.height
 
     im.save(out_path)
     fp1.close()
@@ -62,48 +62,64 @@ def Image_Cut(src_path, out_path, raw_label, picture_size = 256):
     label[3] = 1 - label[3]
     return label
     
-PreservingOrder = True
+# PreservingOrder = True
 
-if PreservingOrder:
-    src_files = './data/training_data/mix/imgs.txt'
-    out_root = 'data/training_data/mix/'
+# if PreservingOrder:
+#     src_files = './data/training_data/mix/imgs.txt'
+#     out_root = 'data/training_data/mix/'
 
-    files = []
-    with open(src_files, 'r') as f:
-        files = f.readlines()
+#     files = []
+#     with open(src_files, 'r') as f:
+#         files = f.readlines()
 
-    data = open(os.path.join(out_root,'data.txt'), 'w')
+#     data = open(os.path.join(out_root,'data.txt'), 'w')
 
-    for f in files:
-        f = f.strip().split(' ')
-        img_path = f[0]
-        print(img_path)
-        fname = f[0].split('/')[-1]
-        mid_path = os.path.join(out_root, 'watermark', fname)
-        out_path = os.path.join(out_root, 'cropped', fname)
-        label = Add_Watermark(img_path, mid_path)
-        label = Image_Cut(mid_path, out_path, label)
-        data.write(out_path + " {} {} {} {}\n".format(label[0],label[1],label[2],label[3]))
+#     for f in files:
+#         f = f.strip().split(' ')
+#         img_path = f[0]
+#         print(img_path)
+#         fname = f[0].split('/')[-1]
+#         mid_path = os.path.join(out_root, 'watermark', fname)
+#         out_path = os.path.join(out_root, 'cropped', fname)
+#         label = Add_Watermark(img_path, mid_path)
+#         label = Image_Cut(mid_path, out_path, label)
+#         data.write(out_path + " {} {} {} {}\n".format(label[0],label[1],label[2],label[3]))
 
-else:
-    src_path_list = ['./data/source_data/birds/*.jpg',
-                    './data/source_data/wild/*.jpg']
-    out_root = 'data/training_data/mix/'
+# else:
+#     src_path_list = ['./data/source_data/birds/*.jpg',
+#                     './data/source_data/wild/*.jpg']
+#     out_root = 'data/training_data/mix/'
 
-    files = []
-    for src_path in src_path_list:
-        files += glob(src_path)
-    data = open(os.path.join(out_root,'data.txt'), 'w')
+#     files = []
+#     for src_path in src_path_list:
+#         files += glob(src_path)
+#     data = open(os.path.join(out_root,'data.txt'), 'w')
 
-    cnt = 1
-    for f in files:
-        fname = '{:0>5d}'.format(cnt)
-        img_path = os.path.join(f)
-        print(img_path)
-        mid_path = os.path.join(out_root, 'watermark', fname + '.jpg')
-        out_path = os.path.join(out_root, 'cropped', fname+ '.jpg')
-        cnt += 1
-        label = Add_Watermark(img_path, mid_path)
-        label = Image_Cut(mid_path, out_path, label)
-        data.write(out_path + " {} {} {} {}\n".format(label[0],label[1],label[2],label[3]))
+#     cnt = 1
+#     for f in files:
+#         fname = '{:0>5d}'.format(cnt)
+#         img_path = os.path.join(f)
+#         print(img_path)
+#         mid_path = os.path.join(out_root, 'watermark', fname + '.jpg')
+#         out_path = os.path.join(out_root, 'cropped', fname+ '.jpg')
+#         cnt += 1
+#         label = Add_Watermark(img_path, mid_path)
+#         label = Image_Cut(mid_path, out_path, label)
+#         data.write(out_path + " {} {} {} {}\n".format(label[0],label[1],label[2],label[3]))
+        
+src_files = './data/training_data/original/imgs.txt'
+out_root = 'data/training_data/'
+files = []
+with open(src_files, 'r') as f:
+    files = f.readlines()
+    
+data = open(os.path.join(out_root,'data.txt'), 'w')
 
+for f in files:
+    f = f.strip().split(' ')
+    img_path = f[0]
+    print(img_path)
+    fname = f[0].split('/')[-1]
+    out_path = os.path.join(out_root, 'watermark', fname)
+    label = Add_Watermark(img_path, out_path)
+    data.write(out_path + " {} {} {} {}\n".format(label[0],label[1],label[2],label[3]))

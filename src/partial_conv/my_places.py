@@ -12,7 +12,7 @@ STDDEV = [0.229, 0.224, 0.225]
 
 
 # reverses the earlier normalization applied to the image to prepare output
-def sunnormalize(x):
+def unnormalize(x):
     x.transpose_(1, 3)
     x = x * torch.Tensor(STDDEV) + torch.Tensor(MEAN)
     x.transpose_(1, 3)
@@ -47,5 +47,4 @@ class My_Places (torch.utils.data.Dataset):
         
         mask = Image.open(self.mask_paths[index])
         mask = self.mask_transform(mask.convert('RGB'))
-        mask = mask/255
         return gt_img * mask, mask, gt_img

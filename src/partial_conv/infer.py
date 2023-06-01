@@ -14,7 +14,7 @@ test_data_path  = 'data/training_data/mix/train_partialConv.txt'
 test_dataset =My_Places(path_to_data=test_data_path)
 
 device = torch.device("cuda") # use GPU to train
-model = torch.load('model/partitail_conv_net.pkl')
+model = torch.load('model/overfit.pkl')
 model.eval()
 model.to(device)
 
@@ -22,14 +22,15 @@ test_loader  = DataLoader(dataset=test_dataset,  batch_size=4)
 for i, (images_masked, masks, images) in enumerate(test_loader):
 
     image_masked  \
-          = torch.tensor(list(i.numpy() for i in images_masked)).to(device)
-    mask  = torch.tensor(list(m.numpy() for m in masks)).to(device)
-    image = torch.tensor(list(t.numpy() for t in images))
+          = torch.tensor(np.array([i.numpy() for i in images_masked])).to(device)
+    mask  = torch.tensor(np.array([m.numpy() for m in masks        ])).to(device)
+    image = torch.tensor(np.array([t.numpy() for t in images       ]))
 
     with torch.no_grad():
         output = model(image_masked, mask).cpu()
         mask = mask.cpu()
         output = (mask * image) + ((1 - mask)*output)
+        # output = mask
     break
     
 # for image in output:
