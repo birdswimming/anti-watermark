@@ -42,11 +42,11 @@ class My_Places (torch.utils.data.Dataset):
         return self.num_imgs
 
     def __getitem__(self, index):
+        
         gt_img = Image.open(self.img_paths[index])
         gt_img = self.img_transform(gt_img.convert('RGB'))
         
         mask = Image.open(self.mask_paths[index])
         mask = self.mask_transform(mask.convert('RGB'))
-        mask = mask / 255
 
         return gt_img * mask, mask, gt_img
