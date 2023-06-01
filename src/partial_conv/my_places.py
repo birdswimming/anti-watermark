@@ -12,7 +12,7 @@ STDDEV = [0.229, 0.224, 0.225]
 
 
 # reverses the earlier normalization applied to the image to prepare output
-def unnormalize(x):
+def sunnormalize(x):
     x.transpose_(1, 3)
     x = x * torch.Tensor(STDDEV) + torch.Tensor(MEAN)
     x.transpose_(1, 3)
@@ -27,7 +27,7 @@ class My_Places (torch.utils.data.Dataset):
         img_paths = []
         mask_paths = []
         for line in fh:                #按行循环txt文本中的内容
-            line = line.rstrip()       # 删除 本行string 字符串末尾的指定字符，这个方法的详细介绍自己查询python
+            line = line.rstrip()       # 删除 本行string 字符串末尾的指定字符s，这个方法的详细介绍自己查询python
             words = line.split()   #通过指定分隔符对字符串进行切片，默认为所有的空字符，包括空格、换行、制表符等
             img_paths.append(words[0])
             mask_paths.append(words[1])
@@ -41,6 +41,7 @@ class My_Places (torch.utils.data.Dataset):
         return self.num_imgs
 
     def __getitem__(self, index):
+        
         gt_img = Image.open(self.img_paths[index])
         gt_img = self.img_transform(gt_img.convert('RGB'))
         

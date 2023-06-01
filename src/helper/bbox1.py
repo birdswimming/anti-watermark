@@ -3,7 +3,7 @@ import os
 import numpy as np
 import cv2
 
-data_path = os.path.join('./data/', 'training_data', 'mix', 'data_uncrop.txt')
+data_path = os.path.join('./data/', 'training_data', 'mix', 'crop2.txt')
 output_path = os.path.join('./data/', 'training_data', 'tmp')
 
 with open(data_path, 'r') as f:

@@ -10,9 +10,10 @@ from my_places import My_Places
 from loss import CalculateLoss
 from partial_conv_net import PartialConvUNet
 
-train_data_path = 'data/training_data/cropped/train.txt'
+train_data_path = 'data/training_data/mix/train_partialConv.txt'
 train_dataset=My_Places(path_to_data=train_data_path)
 model = PartialConvUNet()
+model.train()
 
 def collate_fn(batch):
     return tuple(zip(*batch))
@@ -31,10 +32,16 @@ loss_func = CalculateLoss().to(device)
 
 def train_one_epoch(model, optimizer, loader, device, epoch):
     model.to(device)
-    for image, mask, target in tqdm(loader):
+    for images, masks, targets in tqdm(loader):
+                
+        image  = torch.tensor(list(i.numpy() for i in images)).to(device)
+        mask   = torch.tensor(list(m.numpy() for m in masks)).to(device)
+        target = torch.tensor(list(t.numpy() for t in targets)).to(device)
+        
         output = model(image, target)
-        loss_dict = loss_func(image, mask, output, target)
+        
         loss = 0.0
+        loss_dict = loss_func(image, mask, output, target)
         for key, value in loss_dict.items():
             loss += value
         # Resets gradient accumulator in optimizer
@@ -43,6 +50,7 @@ def train_one_epoch(model, optimizer, loader, device, epoch):
         loss.backward()
         # updates the weights
         optimizer.step()
+
     print("Epoch {}, Loss {}".format(epoch, loss))
 
 num_epochs=10
