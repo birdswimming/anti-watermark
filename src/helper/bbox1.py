@@ -3,8 +3,9 @@ import os
 import numpy as np
 import cv2
 
-data_path = os.path.join('./data/', 'training_data', 'cropped', 'data.txt')
-output_path = os.path.join('./data/', 'training_data', 'bbox')
+data_path = os.path.join('./data/', 'training_data', 'mix', 'data_uncrop.txt')
+output_path = os.path.join('./data/', 'training_data', 'tmp')
+
 with open(data_path, 'r') as f:
     lines = f.readlines()
     for l in lines:
@@ -17,7 +18,7 @@ with open(data_path, 'r') as f:
         img = cv2.rectangle(
             img, (int(size[1]*float(bbox[0])), int(size[0]*float(bbox[1]))), 
                  (int(size[1]*float(bbox[2])), int(size[0]*float(bbox[3]))),
-                 (0,0,255), 1
+                 (0,255,0), 1
             )
         img_name = os.path.join(output_path, img_path.split('/')[-1])
         print(img_name)
