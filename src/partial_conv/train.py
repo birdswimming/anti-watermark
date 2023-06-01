@@ -43,6 +43,7 @@ def train_one_epoch(model, optimizer, loader, device, epoch):
         loss.backward()
         # updates the weights
         optimizer.step()
+    print("Epoch {}, Loss {}".format(epoch, loss))
 
 num_epochs=10
 for epoch in range(num_epochs):
