@@ -5,8 +5,8 @@ from torchvision import transforms as T
 from torch import nn, optim
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, sampler, random_split, Dataset
-from my_detection import MyDetection
-from my_detection import get_transforms
+from partial_conv.my_detection import MyDetection
+from partial_conv.my_detection import get_transforms
 test_data_path  = 'data/testing_data/cropped/test.txt'
 test_dataset =MyDetection(datatxt=test_data_path,  transform=get_transforms(False))
 
