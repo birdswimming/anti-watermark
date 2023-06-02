@@ -40,7 +40,7 @@ f = open("./data/testing_data/bbox_result.txt", "w")
 for i,result in enumerate(boxes):
     find = 0
     for j,score in enumerate(scores[i]):
-        if score > 0.8:
+        if score > 0.7:
             box = boxes[i][j]
             x_min = box[0]/600
             y_min = box[1]/600

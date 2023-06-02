@@ -19,11 +19,11 @@ model.roi_heads.box_predictor = models.detection.faster_rcnn.FastRCNNPredictor(i
 def collate_fn(batch):
     return tuple(zip(*batch))
 
-train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True, num_workers=4, collate_fn=collate_fn)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4, collate_fn=collate_fn)
 device = torch.device("cuda") # use GPU to train
 
 params = [p for p in model.parameters() if p.requires_grad]
-optimizer = torch.optim.SGD(params, lr=0.01, momentum=0.9, nesterov=True, weight_decay=1e-4)
+optimizer = torch.optim.SGD(params, lr=0.05, momentum=0.9, nesterov=True, weight_decay=1e-4)
 
 def train_one_epoch(model, optimizer, loader, device, epoch):
     model.to(device)
@@ -56,7 +56,7 @@ def train_one_epoch(model, optimizer, loader, device, epoch):
         all_losses_dict['loss_objectness'].mean()
     ))
     
-num_epochs=10
+num_epochs=20
 
 for epoch in range(num_epochs):
     train_one_epoch(model, optimizer, train_loader, device, epoch)

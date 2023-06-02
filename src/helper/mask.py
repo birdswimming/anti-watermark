@@ -6,7 +6,7 @@ import cv2
 img_path    = os.path.join('./data/', 'testing_data', 'data.txt')
 bbox_path   = os.path.join('./data/', 'testing_data', 'bbox_result.txt')
 output_path = os.path.join('./data/', 'testing_data', 'mask')
-extension_ratio = 1.2
+extension_ratio = 1.5
 with open(bbox_path, 'r') as f:
     bboxs = f.readlines()
 
